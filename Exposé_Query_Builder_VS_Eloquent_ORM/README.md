@@ -1,153 +1,59 @@
-# Expose ORM
+# Exposé Query Builder VS Eloquent ORM 
+## Introduction
 
-## Migration
-
-```bash
-php artisan make:migration CreatePostTable
-```
-
-```php
-
-<?php
-
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
-
-return new class extends Migration
-{
-    public function up(): void
-    {
-        Schema::create('posts', function (Blueprint $table) {
-            $table->id();
-            $table->string('title');
-            $table->string('slug')->unique();
-            $table->longText('content');
-            $table->timestamps();
-        });
-    }
-
-    public function down(): void
-    {
-        Schema::dropIfExists('posts');
-    }
-};
-
-```
-
-**Run migration**
-
-```bash
-php artisan migrate
-```
-
-
-## Les models
-
-```bash
-php artisan make:model Post
-
-```
+Laravel propose deux manières principales d'interagir avec les bases de données : `Eloquent ORM` et `Query Builder`. Les deux outils ont leurs propres `forces` et `faiblesses`, il est donc important de choisir celui qui convient le mieux à votre travail.
 
 ___
+## Install debugbar for laravel
 
-## Récupérer des articles
+```bash
+composer require barryvdh/laravel-debugbar --dev
+```
+[Debugbar](https://github.com/barryvdh/laravel-debugbar)
 
-```php
-Route::get('/', function () {
-    $post = \App\Models\Post::all();
-    return $post;
-});
+___
+## Realisation
+```bash
+php artisan make:model Post -r
+php artisan make:model Project -r
 
+``` 
+```bash
+php artisan make:migration create_posts_table
+php artisan make:migration create_projects_table
 ```
 
-```php
-Route::get('/', function () {
-    $post = \App\Models\Post::all(['title', 'slug', 'content']);
-    return $post;
-});
-
+```bash
+php artisan make:view Posts.index
+php artisan make:view Posts.create
+php artisan make:view Posts.edit
+php artisan make:view Posts.show
 ```
 
-
-```php
-Route::get('/', function () {
-    $post = Post::find(3);
-    return $post;
-});
-
+```bash
+php artisan make:view Projects.index
+php artisan make:view Projects.create
+php artisan make:view Projects.edit
+php artisan make:view Projects.show
 ```
 
-```php
-Route::get('/', function () {
-    $post = \App\Models\Post::paginate(2);
-    return $post;
-});
+```bash
+php artisan make:view Layouts.Layout
+php artisan make:view Layouts.Navbar
 ```
 
-```php
-Route::get('/', function () {
-    $post = \App\Models\Post::where('id', '>', 0)->limit(2)->get();
-    dd($post);
-    return $post;
-});
-
-```
-### Créer un article
-
-**Creation basic**
-
-```php
-
-Route::get('create', function () {
-    $post = new \App\Models\Post();
-    $post->title = "mon premier article 3";
-    $post->slug = "mon-premier-article 3";
-    $post->content = "Mon contenu";
-    $post->save();
-    return $post;
-});
-
+```bash
+php artisan make:factory Post
+php artisan make:factory Project
 ```
 
-**Creation normale**
-
-```php
-class Post {
-
-    protected $fillable = ['title', 'slug', 'online'];
-
-}
+```bash
+php artisan make:seeder PostSeeder
+php artisan make:seeder ProjectSeeder
+```
+```bash
+php artisan db:seed
 ```
 
-```php
-Route::get('create', function () {
-    $post = \App\Models\Post::create([
-        'title' => 'title article 4',
-        'slug' => 'slug article 4',
-        'content' => 'content article 4',
-    ]);
-    return $post;
-});
-
-```
-
-
-### Modifier
-
-```php
-Route::get('modifier', function () {
-    $post = \App\Models\Post::find(3);
-    $post->title = "article 3";
-    $post->save();
-    return $post;
-});
-
-```
-
-### Supprimer 
-
-```php
-$post = Post::find(3);
-$post->delete();
-```
+## Présentation
+[Exposé Query Builder VS Eloquent ORM - google slide](https://docs.google.com/presentation/d/1TKUYeHNyaKmjiBR10pVnZ0iaQa0K7YOeP8Je22Ochnk/edit?usp=sharing)
